@@ -2,147 +2,228 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>Oath for Matti</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For Matti </title>
+
 <style>
-  /* Loading screen Deepwoken style */
-  #loading {
+body {
+    margin: 0;
+    background: radial-gradient(circle at top, #0b1c2d, #000814);
+    color: #dbe9f4;
+    font-family: "Georgia", serif;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* PARTICULAS RUNAS */
+@keyframes floatRunes {
+  0% {transform: translateY(0) rotate(0deg);}
+  50% {transform: translateY(-30px) rotate(180deg);}
+  100% {transform: translateY(0) rotate(360deg);}
+}
+.rune {
+  position: absolute;
+  color: #6fc3df;
+  font-size: 24px;
+  animation: floatRunes 6s infinite;
+  opacity: 0.7;
+}
+
+/* PANTALLA DE CARGA */
+#loading {
     position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:black;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
-    font-size:30px;
-    z-index:9999;
-  }
+    width: 100%;
+    height: 100%;
+    background: #000814;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+    0%, 100% {opacity: 0.8;}
+    50% {opacity: 1;}
+}
+#loading h1 {
+    font-size: 3em;
+    letter-spacing: 6px;
+    color: #6fc3df;
+}
+#loading p {
+    opacity: 0.7;
+    margin-top: 10px;
+    font-size: 1em;
+}
 
-  @keyframes blink {
-    0%,50%,100% {opacity:1;}
-    25%,75% {opacity:0;}
-  }
+/* MAIN */
+#main {
+    display: none;
+    padding: 30px;
+    max-width: 900px;
+    margin: auto;
+}
 
-  #loading span {
-    animation: blink 1s infinite;
-  }
+/* TEXTO ANIMADO */
+p {
+    line-height: 1.8;
+    font-size: 1.05em;
+    margin-bottom: 18px;
+    opacity: 1;
+}
 
-  body {
-    margin:0;
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(120deg,#000000,#0f0f0f);
-    color:white;
-    overflow-x:hidden;
-  }
+/* CONTRASEÑA */
+#gate {
+    margin-top: 40px;
+    text-align: center;
+}
+input {
+    padding: 10px;
+    background: #020c18;
+    border: 1px solid #3a5f7d;
+    color: white;
+}
+button {
+    padding: 10px 16px;
+    background: #0e2a47;
+    color: white;
+    border: none;
+    margin-left: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background: #143b63;
+}
 
-  .content {
-    max-width:900px;
-    margin: 20px auto;
-    padding:20px;
-    line-height:1.6;
-    font-size:18px;
-    display:none; /* Hidden until password entered */
-  }
+/* MENSAJE SECRETO */
+#secret {
+    display: none;
+    margin-top: 40px;
+    border-top: 1px solid #3a5f7d;
+    padding-top: 30px;
+}
 
-  .gallery {
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:center;
-    margin-top:20px;
-  }
+/* GALERÍA DE FOTOS */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 30px;
+}
+.gallery img {
+    width: 100%;
+    border-radius: 8px;
+    opacity: 0.9;
+    transform: scale(0.9);
+    transition: 0.3s;
+}
+.gallery img:hover {
+    opacity: 1;
+    transform: scale(1.05);
+    cursor: zoom-in;
+}
 
-  .gallery img {
-    width:150px;
-    height:150px;
-    object-fit:cover;
-    cursor:pointer;
-    border:2px solid white;
-    transition:0.3s;
-  }
-
-  .gallery img:hover {
-    transform:scale(1.1);
-    border-color:red;
-  }
-
-  #skeleton {
+/* ESQUELETO CORRIENDO MÁS RÁPIDO */
+#skeleton {
     position: fixed;
     bottom: 10px;
     left: -100px;
     font-size: 50px;
-    animation: runSkeleton 2s linear infinite;
-    z-index: 1000;
-  }
-
-  @keyframes runSkeleton {
-    0% {left:-100px;}
-    100% {left:110%;}
-  }
-
-  #passwordDiv {
-    text-align:center;
-    margin-top:50px;
-  }
-
-  #passwordInput {
-    font-size:18px;
-    padding:5px;
-  }
-
-  #passwordButton {
-    font-size:18px;
-    padding:5px 10px;
-    margin-left:5px;
-    cursor:pointer;
-  }
-
-  .fade-in {
-    opacity:0;
-    animation: fadeIn 2s forwards;
-  }
-
-  @keyframes fadeIn {
-    to {opacity:1;}
-  }
+    animation: runSkeleton 4s linear infinite; /* más rápido */
+}
+@keyframes runSkeleton {
+    0% {left: -100px;}
+    50% {left: 50%;}
+    100% {left: 110%;}
+}
+#skeletonText {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2em;
+    color: #f9f871;
+    opacity: 0;
+    animation: showText 5s forwards; /* más rápido para coincidir con skeleton */
+}
+@keyframes showText {
+    0% {opacity: 0;}
+    70% {opacity: 0;}
+    80% {opacity: 1;}
+    100% {opacity: 1;}
+}
 </style>
 </head>
+
 <body>
 
-<!-- Loading screen -->
+<!-- PARTICULAS RUNAS -->
+<div class="rune" style="top:10%; left:20%;">✦</div>
+<div class="rune" style="top:40%; left:70%;">⚛</div>
+<div class="rune" style="top:70%; left:30%;">✹</div>
+<div class="rune" style="top:20%; left:50%;">☽</div>
+<div class="rune" style="top:60%; left:80%;">✧</div>
+
+<!-- PANTALLA DE CARGA -->
 <div id="loading">
-  <div>Loading Deepwoken World...</div>
-  <span>|</span>
+    <h1>DEEPWOKEN</h1>
+    <p>Loading world data...</p>
+    <p>Connecting to the Depths...</p>
 </div>
 
-<!-- Music and ambient sounds -->
-<audio id="music" autoplay loop>
-  <source src="https://drive.google.com/uc?export=download&id=1V7xId34QgqTAU6lFRd6KTgziTllk--6b" type="audio/mp3">
-</audio>
-<audio id="ambient" autoplay loop>
-  <source src="https://freesound.org/data/previews/572/572722_7016955-lq.mp3" type="audio/mp3">
+<!-- AUDIO -->
+<audio id="bgMusic" loop autoplay>
+  <source src="https://www.orangefreesounds.com/wp-content/uploads/2017/12/Deep-ambient-background-music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Skeleton meme -->
-<div id="skeleton">💀</div>
-<div style="text-align:center; font-size:24px; margin-top:10px;">MUST BE THE WIND</div>
+<audio id="owlSound">
+  <source src="https://www.soundjay.com/nature/owl-hoot-1.mp3" type="audio/mpeg">
+</audio>
 
-<!-- Password input -->
-<div id="passwordDiv">
-  <input type="text" id="passwordInput" placeholder="Enter the secret word">
-  <button id="passwordButton">Unlock</button>
-</div>
+<!-- MAIN -->
+<div id="main">
 
-<!-- Main content -->
-<div class="content fade-in">
+<h2>Oath for Matti</h2>
 
-<p>
-Matti, ever since I met you, every moment with you feels like a whole different world, a place where everything is possible and where I want to stay forever. I adore it when you talk to me about the things I love, when we share our worlds and you teach me to see them from your perspective. Playing Deepwoken with you makes every battle, every adventure, every laugh, and every fall an unforgettable memory. Valorant is another of our adventures, and I love trying new things with you, discovering strategies, laughing at our mistakes, and celebrating every little win. I love cutting your hair and drawing with you, feeling that creative connection we have, listening to music, and laughing until our stomach hurts from tickles that only you can make happen. Walking together, exploring Iceland, discovering every corner with you, watching Brooklyn 99 and The Boondocks, eating together, and simply sharing our lives makes me feel like I don’t need anything else. Every time I see your smile, my eyes light up, my heart beats faster, and I want to see you for the rest of my life. Perhaps I’m not the “right one” for you, but I don’t want to meet anyone else. Every moment with you is an adventure, a gift I treasure with all my heart. I want you to know that everything I feel is real, deep, and eternal. I love how you make simple things magical, from our silly jokes to our serious talks. Playing games, making art, exploring new music, cooking, sharing little secrets, and seeing you happy are what I live for. I love all the little things: your laugh, the way you look at me, the way we understand each other without words, our inside jokes, our shared dreams, and our future adventures. Every day I spend with you feels like a new chapter in an epic story that I never want to end. I love every part of you, everything you do, and the way you make me feel. Even the smallest gestures matter, and I notice them all because I care about you so deeply. I want to experience life with you, to explore every corner of the world, to play every game, to create every memory, to laugh, cry, and grow together. You are my favorite person, my safe place, my adventure partner, and my love. I can’t imagine my life without you. You make every day brighter, every challenge easier, and every joy more intense. I want us to keep sharing moments, discovering new things, playing Deepwoken, watching Brooklyn 99, drawing, laughing at our silly jokes, and living our lives together. My love for you is endless, and I will always cherish every second we spend together. I want to see your smile every day, hear your voice, hold your hand, and be by your side in everything. You are my heart, my joy, and the reason I believe in love and happiness. I love everything about you, and I want to be with you forever.
+<p id="text">
+Matti, every single moment with you feels like stepping into a world I never knew I needed, a universe where laughter, warmth, and adventure collide in the most beautiful ways. From the first time we played Deepwoken together, I knew there was something magical about us — the way our characters explored unknown lands side by side mirrored the way I want to explore life with you. Every victory, every failure, every chaotic fight we survived together, my heart was reminded of how much joy you bring to me. I adore how you explain things about the games I love, how your excitement becomes contagious, making every quest, every challenge, feel meaningful because we are experiencing it together.  
+
+Playing Valorant with you is a thrill, not because of the game itself, but because it’s us, laughing at our mistakes, celebrating the tiny victories, teasing each other in ways that only we understand. I love how we invent new things together — making up stories, drawing, trying random little experiments, just enjoying the freedom of being ourselves with no judgment. Cutting your hair, helping each other with the simplest things, makes every ordinary moment feel like a precious memory, a story I will tell myself over and over because I never want to forget the way you make me feel.  
+
+I love the quiet moments too — when we just sit and watch Brooklyn 99 together, sharing a smile over the same joke, or when we walk around Iceland, feeling the crisp air, sharing our thoughts, dreaming aloud about what we want in life. The way your eyes light up when you notice something small, your laugh that fills the room, the way you hold my hand and make me feel safe — it all makes my heart ache with happiness. Eating together, the mundane act of sharing food becomes a ritual I treasure, every bite a reminder that we are sharing life in the simplest, yet most profound ways.  
+
+Each time I see your smile, my eyes shine like the northern lights, and I want to capture that moment forever. Every time you laugh at a silly joke, or when we get caught up in tickles, I realize that these are the moments I want to live for. Perhaps I am not perfect for you, perhaps I have flaws and insecurities that will challenge us, but my love for you is constant, unwavering, and I cannot imagine looking at anyone else the way I look at you. You are my home, my adventure, my anchor, my everything.  
+
+The games we play are not just games — they are journeys we take together. In Deepwoken, I see our teamwork, our trust, our ability to survive the harshest challenges, and it mirrors what I hope for in life: facing every storm with you by my side. I love discovering new lands with you, finding treasures and secrets, and laughing at our own clumsiness when we fail. Even the moments of silence in-game, the quiet understanding between us, are filled with comfort and belonging. Every time I hear your voice explaining a strategy, or joking about something, my heart swells with gratitude that I get to share these moments with you.  
+
+I love how we can be silly together, watching Brooklyn 99 episodes and quoting lines back and forth, how our inside jokes make complete strangers confused, and yet it’s perfect because it’s ours. I adore every tiny quirk of yours — the way you scrunch your nose when concentrating, the way your eyes sparkle when you are excited, the way your smile can light up the darkest room. I want to see that smile for the rest of our lives. Every adventure we share, whether it’s exploring new games, trying new foods, drawing together, or simply lying in comfortable silence, is a thread in the fabric of my love for you.  
+
+I remember our first moments together, the way I felt my heart beat faster when we talked about things I loved, how comfortable and understood I felt with you, and every day since has been a continuation of that magic. I want to keep building these moments, these memories, endlessly. The way you care, the way you notice, the way you laugh, the way you hold my hand — it all makes me feel like the luckiest person in existence.  
+
+Even the small things matter: walking to the store, deciding what to eat, choosing which game to play, or what episode of Brooklyn 99 to watch — these are not mundane, they are sacred because we share them. I love our midnight talks, our secret jokes, the way our laughter echoes in rooms and hearts alike. Every glance, every touch, every shared smile reminds me why I cannot imagine loving anyone else the way I love you.  
+
+I promise to cherish you, to explore life with you, to laugh and cry with you, to stand beside you in every storm and dance with you in every victory. I promise to respect you, to listen, to grow with you, to be the person you can always count on. You are my everything, my anchor, my adventure, my heart. I want to see your smile every day, to hear your laughter, to share in your joys and sorrows, to discover every corner of the world with you.  
+
+I love you not only for who you are but for how I am when I am with you — freer, happier, braver, more alive. I love every moment, every laugh, every adventure, every quiet, every silly, every serious, every ordinary and extraordinary second we share. Each memory is a jewel I hold in my heart, each glance a spark of fire that keeps me warm.  
+
+Playing our games, watching Brooklyn 99, discovering Iceland, cutting your hair, drawing, tickling, eating together, laughing until our sides hurt, exploring the unknown — I treasure all of it. You make life vivid, exciting, and infinitely more beautiful. Each time I see you, I feel my soul recognize you in a way words can hardly capture. My heart, my mind, my very being, belongs to you.  
+
+I do not want anyone else, I do not wish for anyone else — only you. Every heartbeat, every dream, every moment is tied to you. I cannot imagine my life without the joy you bring, the laughter you create, the love you give. I choose you, endlessly, eternally. Every day I wake up grateful for you, for the life we share, for the love that fills every corner of my being. You are my home, my adventure, my forever.
 </p>
 
-<!-- Photo gallery -->
+<div id="gate">
+    <p><strong>Security Check</strong></p>
+    <p>What is the word we always say in Spanish?</p>
+    <input id="pw" placeholder="Enter word">
+    <button onclick="check()">Confirm</button>
+</div>
+
+<div id="secret">
+<h2>Oath Accepted</h2>
+
+<p>This oath is unlocked because you are my destiny. Every laugh, every game, every walk, every quiet moment — I want them all with you. You are my home, my depth, my forever. Nothing else matters, only us. Every heartbeat, every adventure, every dream I have is tied to you. This is my oath, my soul, my deepest devotion. I choose you, endlessly, eternally.</p>
+
 <div class="gallery">
   <a href="https://i.postimg.cc/3dWjtLCG/316077c2225cab434b441352ab250956.jpg" target="_blank"><img src="https://i.postimg.cc/3dWjtLCG/316077c2225cab434b441352ab250956.jpg"></a>
   <a href="https://i.postimg.cc/NKH6c5nk/58c8338ec1aa4e8d92f4db21bba85864.jpg" target="_blank"><img src="https://i.postimg.cc/NKH6c5nk/58c8338ec1aa4e8d92f4db21bba85864.jpg"></a>
@@ -158,27 +239,7 @@ Matti, ever since I met you, every moment with you feels like a whole different 
   <a href="https://i.postimg.cc/G9HYnXHw/IMG-20251009-132011-600.jpg" target="_blank"><img src="https://i.postimg.cc/G9HYnXHw/IMG-20251009-132011-600.jpg"></a>
   <a href="https://i.postimg.cc/YjhgBdhc/IMG-20251031-212527-437.webp" target="_blank"><img src="https://i.postimg.cc/YjhgBdhc/IMG-20251031-212527-437.webp"></a>
   <a href="https://i.postimg.cc/qgznH1g5/IMG-20251124-033920-477.jpg" target="_blank"><img src="https://i.postimg.cc/qgznH1g5/IMG-20251124-033920-477.jpg"></a>
-</div>
-
-<script>
-  // Hide loading screen
-  window.addEventListener('load', function() {
-    setTimeout(function() {
-      document.getElementById('loading').style.display='none';
-    },3000);
-  });
-
-  // Password unlock
-  const button = document.getElementById('passwordButton');
-  button.addEventListener('click', function() {
-    const input = document.getElementById('passwordInput').value;
-    if(input.toLowerCase() === 'cosita'){
-      document.querySelector('.content').style.display = 'block';
-      document.getElementById('passwordDiv').style.display = 'none';
-    } else {
-      alert('Wrong word! Try again.');
-    }
-  });
-</script>
-</body>
-</html>
+  <a href="https://i.postimg.cc/9zrTHLz8/IMG-20251124-033930-235.jpg" target="_blank"><img src="https://i.postimg.cc/9zrTHLz8/IMG-20251124-033930-235.jpg"></a>
+  <a href="https://i.postimg.cc/xqcHV6qp/IMG-20251124-033939-039.jpg" target="_blank"><img src="https://i.postimg.cc/xqcHV6qp/IMG-20251124-033939-039.jpg"></a>
+  <a href="https://i.postimg.cc/c6rYGF6z/IMG-20251201-182855-296.jpg" target="_blank"><img src="https://i.postimg.cc/c6rYGF6z/IMG-20251201-182855-296.jpg"></a>
+  <a href="https://i.postimg.cc/bD6QHMr/IMG-20251201-182900-123.jpg" target="_blank"><img src="https://i.postimg.cc/bD6QH
